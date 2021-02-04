@@ -20,7 +20,7 @@ namespace ExtraEnemyAbilities
 
         public const string
             MODNAME = "ExtraEnemyAbilities",
-            AUTHOR = "Dak",
+            AUTHOR = "dak",
             GUID = "com." + AUTHOR + "." + MODNAME,
             VERSION = "0.0.3";
 
