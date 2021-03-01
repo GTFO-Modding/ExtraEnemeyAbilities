@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using UnityEngine;
 using FX_EffectSystem;
 using Il2CppSystem.Collections;
+using Player;
+using Agents;
 
 namespace ExtraEnemyAbilities.Utilities
 {
@@ -25,12 +27,53 @@ namespace ExtraEnemyAbilities.Utilities
 
                 foreach (var target in targets)
                 {
-                    var comp = target.GetComponent<IDamageable>();
 
-                    if (comp != null)
+                    Vector3 targetPos = target.transform.position;
+
+                    Agent agent = target.GetComponent<Agent>();
+                    if (agent != null)
                     {
-                        comp.ExplosionDamage(damage, pos, Vector3.up * 1000);
+                        targetPos = agent.EyePosition;
                     }
+                    Vector3 direction = (targetPos - position).normalized;
+                    bool hit = false;
+
+                    if (!Physics.Raycast(pos, direction.normalized, out RaycastHit raycastHit, range, LayerManager.MASK_EXPLOSION_BLOCKERS))
+                    {
+                        hit = true;
+                        var comp = target.GetComponent<IDamageable>();
+
+                        if (comp != null)
+                        {
+                            comp.ExplosionDamage(damage, pos, Vector3.up * 1000);
+                        }
+                    } else
+                    {
+                        GameObject mySphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                        mySphere.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+                        mySphere.transform.position = raycastHit.point;
+                        var col = mySphere.GetComponent<Collider>();
+                        var mesh = mySphere.GetComponent<MeshRenderer>();
+                        mesh.material.color = Color.red;
+                        GameObject.Destroy(col);
+                    }
+
+
+#if DEBUG
+                    GameObject line = new GameObject();
+                    line.AddComponent<LineRenderer>();
+                    LineRenderer lineRender = line.GetComponent<LineRenderer>();
+                    lineRender.material = new Material(Shader.Find("Sprites/Default"));
+                    lineRender.widthMultiplier = 0.05f;
+                    lineRender.SetColors(Color.green, Color.green);
+                    lineRender.SetPositions(new Vector3[] { pos, targetPos });
+
+                    if (hit == false)
+                    {
+                        lineRender.SetColors(Color.red, Color.red);
+                        lineRender.SetPositions(new Vector3[] { pos, raycastHit.point });
+                    }
+#endif
                 }
                 NoiseManager.MakeNoise(noiseData);
             }
