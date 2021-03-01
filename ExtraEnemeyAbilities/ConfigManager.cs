@@ -16,11 +16,11 @@ namespace ExtraEnemyAbilities
 
 		static ConfigManager()
         {
-            var dic = new Dictionary<uint, ExploderConfig>
-            {
-                { 0, new ExploderConfig() { Damage = 0, NoiseMax = 0, NoiseMin = 0, Radius = 0 } }
+			var Dictionary = new Dictionary<uint, ExploderConfig>
+			{
+				{ 0, new ExploderConfig() { Radius = 0, Damage = 0, NoiseMin = 0, NoiseMax = 0, InfectionAmount = 0, NoExplosionOnDeath = false, EMPEnabled = false, EMPRange = 0, EMPDuration = 0, ColorData = new ColorData() { a = 0, r = 0, g = 0, b = 0 } } }
             };
-            ExploderConfigHolder = new ExploderConfigHolder() { ExploderConfigs = dic };
+            ExploderConfigHolder = new ExploderConfigHolder() { ExploderConfigs = Dictionary };
 			string customContentPath = MTFO.Managers.ConfigManager.CustomPath;
 
 			//Setup Exploder Config
@@ -50,19 +50,11 @@ namespace ExtraEnemyAbilities
 		public float NoiseMin;
 		public float NoiseMax;
 		public float InfectionAmount;
-		public bool ExplodeOnDeath;
+		public bool NoExplosionOnDeath;
+        public bool EMPEnabled;
+        public float EMPRange;
+        public float EMPDuration;   
 		public ColorData ColorData;
-
-        public ExploderConfig(float radius = 0, float damage = 0, float noiseMin = 0, float noiseMax = 0, float infectionAmount = 0, bool explodeOnDeath = true, ColorData colorData = new ColorData())
-        {
-            Radius = radius;
-            Damage = damage;
-            NoiseMin = noiseMin;
-            NoiseMax = noiseMax;
-            InfectionAmount = infectionAmount;
-            ExplodeOnDeath = explodeOnDeath;
-            ColorData = colorData;
-        }
     }
 
     public struct ColorData
@@ -71,14 +63,6 @@ namespace ExtraEnemyAbilities
         public float g;
         public float b;
         public float a;
-
-        public ColorData(float r = 1, float g = 0, float b = 0, float a = 1)
-        {
-            this.r = r;
-            this.g = g;
-            this.b = b;
-            this.a = a;
-        }
     }
 
 	public struct FogSphereConfigHolder

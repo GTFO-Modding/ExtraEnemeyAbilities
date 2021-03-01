@@ -18,11 +18,10 @@ namespace ExtraEnemyAbilities.Components
         {
         }
 
-
         private EnemyAgent enemyAgent;
         private ExploderConfig exploderConfig;
         public Color glowColor;
-        public bool detonated = false;
+        public bool dead = false;
         public float detonatedTime = 0;
         private bool fade = false;
         private float glowAmount = 0;
@@ -54,7 +53,7 @@ namespace ExtraEnemyAbilities.Components
 
         public void Update()
         {
-            if (detonated == false)
+            if (dead == false)
             {
                 GlowBounce();
             } else
@@ -77,8 +76,11 @@ namespace ExtraEnemyAbilities.Components
 
         public void Explode()
         {
-            if (detonated == true) return;
-            detonated = true;
+            if (dead == true) return;
+            dead = true;
+
+            if (exploderConfig.NoExplosionOnDeath) return;
+
             enemyAgent.Appearance.InterpolateGlow(glowColor, 0.1f);
             var fx = s_explodeFXPool.AquireEffect();
             fx.Play(null, enemyAgent.Position, Quaternion.LookRotation(enemyAgent.TargetLookDir));
@@ -95,16 +97,30 @@ namespace ExtraEnemyAbilities.Components
                 includeToNeightbourAreas = true,
                 raycastFirstNode = false
             };
-            ExplosionUtil.TriggerExplodion(enemyAgent.Position, exploderConfig.Damage, exploderConfig.Radius, noise);
+            ExplosionUtil.TriggerExplodion(enemyAgent.EyePosition, exploderConfig.Damage, exploderConfig.Radius, noise);
         }
 
         private void PlaySplatter()
         {
             if (splattered == true) return;
             splattered = true;
-            if (PlayerManager.TryGetLocalPlayerAgent(out PlayerAgent playerAgent) && ScreenLiquidManager.TryApply(ScreenLiquidSettingName.enemyBlood_BigBloodBomb, enemyAgent.Position, exploderConfig.Radius * 2, true))
+            if (PlayerManager.TryGetLocalPlayerAgent(out PlayerAgent playerAgent))
             {
-                playerAgent.Sound.Post(EVENTS.VISOR_SPLATTER_GORE);
+                if (ScreenLiquidManager.TryApply(ScreenLiquidSettingName.enemyBlood_BigBloodBomb, enemyAgent.Position, exploderConfig.Radius * 2, true))
+                {
+                    playerAgent.Sound.Post(EVENTS.VISOR_SPLATTER_GORE);
+                }
+
+                if (exploderConfig.InfectionAmount == 0) return;
+                if (ScreenLiquidManager.TryApply(ScreenLiquidSettingName.spitterJizz, enemyAgent.Position, exploderConfig.Radius, true))
+                {
+                    playerAgent.Damage.ModifyInfection(new pInfection
+                    {
+                        amount = exploderConfig.InfectionAmount,
+                        mode = pInfectionMode.Add
+                    }, true, true);
+                    playerAgent.Sound.Post(EVENTS.VISOR_SPLATTER_INFECTION);
+                }
             }
         }
 
