@@ -16,6 +16,8 @@ namespace ExtraEnemyAbilities
 
 		static ConfigManager()
         {
+			if (!MTFO.Managers.ConfigManager.HasCustomContent) return;
+
 			var Dictionary = new Dictionary<uint, ExploderConfig>
 			{
 				{ 0, new ExploderConfig() { Radius = 0, Damage = 0, NoiseMin = 0, NoiseMax = 0, InfectionAmount = 0, NoExplosionOnDeath = false, EMPEnabled = false, EMPRange = 0, EMPDuration = 0, ColorData = new ColorData() { a = 0, r = 0, g = 0, b = 0 } } }
@@ -25,6 +27,7 @@ namespace ExtraEnemyAbilities
 
 			//Setup Exploder Config
 			string exploderPath = Path.Combine(customContentPath, "ExploderConfig.json");
+
 			if (File.Exists(exploderPath))
             {
 				Log.Debug("Loading from disk");
