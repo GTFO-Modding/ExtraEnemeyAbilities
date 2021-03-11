@@ -15,14 +15,14 @@ namespace Offshoot.Components
     {
         public static bool Prefix(EAB_FogSphere __instance)
         {
-
-            if (!ConfigManager.ExploderConfigDictionary.ContainsKey(__instance.m_owner.EnemyDataID)) return true;            
-            if (SNet.IsMaster)
+            CustomAbility customAbility = __instance.m_owner.GetComponent<CustomAbility>();
+            if (customAbility == null)
             {
-                ExploderBase exploderBase = __instance.m_owner.GetComponent<ExploderBase>();
-                exploderBase.Explode();
+                Log.Debug("Triggered vanilla ability");
+                return true;
             }
-
+            customAbility.Trigger();
+            Log.Debug("Triggered custom ability");
             return false;
         }
     }
@@ -32,9 +32,12 @@ namespace Offshoot.Components
     {
         public static bool Prefix(ES_TriggerFogSphere __instance)
         {
-            if (!ConfigManager.ExploderConfigDictionary.ContainsKey(__instance.m_enemyAgent.EnemyDataID)) return true;
+            //This needs to be changed somehow
+            if (!ConfigManager.CustomIDs.Contains(__instance.m_enemyAgent.EnemyDataID)) return true;
             __instance.m_fogSphereAbility.DoTrigger();
-            __instance.m_machine.ChangeState((int)ES_StateEnum.Dead);
+
+            ES_StateEnum endState = ConfigManager.GetEndState(__instance.m_enemyAgent.EnemyDataID);
+            __instance.m_machine.ChangeState((int)endState);
             return false;
         }
     }

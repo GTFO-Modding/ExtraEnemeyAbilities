@@ -23,11 +23,28 @@ namespace ExtraEnemyAbilities.Patches
             //    BleederPrefab.AddComponent<BleederBase>();
             //}
 
-            if (ConfigManager.ExploderConfigDictionary.ContainsKey(data.persistentID))
+            //This should probably be some sort of generic
+
+            if (ConfigManager.ExploderConfigDictionary != null)
             {
-                Log.Debug($"Created exploder type enemy with name of '{data.name}'");
-                GameObject ExploderPrefab = EnemyPrefabManager.Current.m_enemyPrefabs[data.persistentID];
-                ExploderPrefab.AddComponent<ExploderBase>();
+                if (ConfigManager.ExploderConfigDictionary.ContainsKey(data.persistentID))
+                {
+                    Log.Debug($"Created exploder type enemy with name of '{data.name}'");
+                    GameObject ExploderPrefab = EnemyPrefabManager.Current.m_enemyPrefabs[data.persistentID];
+                    ExploderPrefab.AddComponent<ExploderAbility>();
+                    return;
+                }
+            }
+
+            if (ConfigManager.EMPConfigDictionary != null)
+            {
+                if (ConfigManager.EMPConfigDictionary.ContainsKey(data.persistentID))
+                {
+                    GameObject EMPPrefab = EnemyPrefabManager.Current.m_enemyPrefabs[data.persistentID];
+                    EMPPrefab.AddComponent<EMPAbility>();
+                    Log.Debug($"Created EMP type enemy with name of '{data.name}'");
+                    return;
+                }
             }
         }
     }

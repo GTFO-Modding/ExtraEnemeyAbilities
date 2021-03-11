@@ -13,10 +13,19 @@ namespace ExtraEnemyAbilities
             ExtraEnemyAbilities.log.LogDebug(msg);
         }
 
+        public static void Warning(object msg)
+        {
+            ExtraEnemyAbilities.log.LogWarning(msg);
+        }
+
         public static void Error(object msg)
         {
             ExtraEnemyAbilities.log.LogError(msg);
         }
 
+        public static void Message(object msg)
+        {
+            ExtraEnemyAbilities.log.LogMessage(msg);
+        }
     }
 }

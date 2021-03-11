@@ -9,19 +9,20 @@ using ExtraEnemyAbilities.Utilities;
 using Player;
 using AK;
 using FX_EffectSystem;
+using LevelGeneration;
 
 namespace ExtraEnemyAbilities.Components
 {
-    public class ExploderBase : MonoBehaviour
+    public class ExploderAbility : CustomAbility
     {
-        public ExploderBase(IntPtr intPtr) : base(intPtr)
+        public ExploderAbility(IntPtr intPtr) : base(intPtr)
         {
         }
 
-        private EnemyAgent enemyAgent;
-        private ExploderConfig exploderConfig;
+        private EnemyAgent EnemyAgent;
+        private ExploderConfig ExploderConfig;
         public Color glowColor;
-        public bool dead = false;
+        public bool exploded = false;
         public float detonatedTime = 0;
         private bool fade = false;
         private float glowAmount = 0;
@@ -34,26 +35,27 @@ namespace ExtraEnemyAbilities.Components
 
         public void Awake()
         {
-            enemyAgent = GetComponent<EnemyAgent>();
-            exploderConfig = ConfigManager.ExploderConfigDictionary[enemyAgent.EnemyDataID];
+            EnemyAgent = GetComponent<EnemyAgent>();
+            ExploderConfig = ConfigManager.ExploderConfigDictionary[EnemyAgent.EnemyDataID];
 
-            glowColor = Util.GetUnityColor(exploderConfig.ColorData);
+            glowColor = Util.GetUnityColor(ExploderConfig.ColorData);
 
-            enemyAgent.MaterialHandler.m_defaultGlowColor = glowColor;
+            EnemyAgent.MaterialHandler.m_defaultGlowColor = glowColor;
             if (staticValuesLoaded == false)
             {
                 s_explodeFXPool = FX_Manager.GetPreloadedEffectPool("FX_InfectionSpit");
                 staticValuesLoaded = true;
             }
 
-            enemyAgent.add_OnDeadCallback((Action)(() => {
-                Explode();
+            EnemyAgent.add_OnDeadCallback((Action)(() => {
+                if (ExploderConfig.NoExplosionOnDeath) return;
+                Trigger();
             }));
         }
 
         public void Update()
         {
-            if (dead == false)
+            if (exploded == false)
             {
                 GlowBounce();
             } else
@@ -69,35 +71,34 @@ namespace ExtraEnemyAbilities.Components
                 if (detonatedTime > 1 && !fade)
                 {
                     fade = true;
-                    enemyAgent.Appearance.InterpolateGlow(Color.black, 4f);
+                    EnemyAgent.Appearance.InterpolateGlow(Color.black, 4f);
                 }
             }
         }
 
-        public void Explode()
+        public override void Trigger()
         {
-            if (dead == true) return;
-            dead = true;
+            if (exploded == true) return;
+            exploded = true;
 
-            if (exploderConfig.NoExplosionOnDeath) return;
-
-            enemyAgent.Appearance.InterpolateGlow(glowColor, 0.1f);
+            EnemyAgent.Appearance.InterpolateGlow(glowColor, 0.1f);
             var fx = s_explodeFXPool.AquireEffect();
-            fx.Play(null, enemyAgent.Position, Quaternion.LookRotation(enemyAgent.TargetLookDir));
+            fx.Play(null, EnemyAgent.Position, Quaternion.LookRotation(EnemyAgent.TargetLookDir));
 
             var noise = new NM_NoiseData()
             {
                 noiseMaker = null,
-                position = enemyAgent.Position,
-                radiusMin = exploderConfig.NoiseMin,
-                radiusMax = exploderConfig.NoiseMax,
+                position = EnemyAgent.Position,
+                radiusMin = ExploderConfig.NoiseMin,
+                radiusMax = ExploderConfig.NoiseMax,
                 yScale = 1,
-                node = enemyAgent.CourseNode,
+                node = EnemyAgent.CourseNode,
                 type = NM_NoiseType.InstaDetect,
                 includeToNeightbourAreas = true,
                 raycastFirstNode = false
             };
-            ExplosionUtil.TriggerExplodion(enemyAgent.EyePosition, exploderConfig.Damage, exploderConfig.Radius, noise);
+
+            ExplosionUtil.TriggerExplodion(EnemyAgent.EyePosition, ExploderConfig.Damage, ExploderConfig.Radius, noise);
         }
 
         private void PlaySplatter()
@@ -106,17 +107,17 @@ namespace ExtraEnemyAbilities.Components
             splattered = true;
             if (PlayerManager.TryGetLocalPlayerAgent(out PlayerAgent playerAgent))
             {
-                if (ScreenLiquidManager.TryApply(ScreenLiquidSettingName.enemyBlood_BigBloodBomb, enemyAgent.Position, exploderConfig.Radius * 2, true))
+                if (ScreenLiquidManager.TryApply(ScreenLiquidSettingName.enemyBlood_BigBloodBomb, EnemyAgent.Position, ExploderConfig.Radius * 2, true))
                 {
                     playerAgent.Sound.Post(EVENTS.VISOR_SPLATTER_GORE);
                 }
 
-                if (exploderConfig.InfectionAmount == 0) return;
-                if (ScreenLiquidManager.TryApply(ScreenLiquidSettingName.spitterJizz, enemyAgent.Position, exploderConfig.Radius, true))
+                if (ExploderConfig.InfectionAmount <= 0) return;
+                if (ScreenLiquidManager.TryApply(ScreenLiquidSettingName.spitterJizz, EnemyAgent.Position, ExploderConfig.Radius, true))
                 {
                     playerAgent.Damage.ModifyInfection(new pInfection
                     {
-                        amount = exploderConfig.InfectionAmount,
+                        amount = ExploderConfig.InfectionAmount,
                         mode = pInfectionMode.Add
                     }, true, true);
                     playerAgent.Sound.Post(EVENTS.VISOR_SPLATTER_INFECTION);
@@ -129,7 +130,7 @@ namespace ExtraEnemyAbilities.Components
             glowAmount += Time.deltaTime;
             int speed = 4;
 
-            if (enemyAgent.ScannerData.m_soundIndex > -1)
+            if (EnemyAgent.ScannerData.m_soundIndex > -1)
             {
                 speed = 10;
             }
@@ -138,12 +139,12 @@ namespace ExtraEnemyAbilities.Components
 
             if (curvePos >= 1)
             {
-                enemyAgent.Appearance.InterpolateGlow(glowColor, enemyAgent.MaterialHandler.m_defaultHeartbeatLocation, 1f/speed);
+                EnemyAgent.Appearance.InterpolateGlow(glowColor, EnemyAgent.MaterialHandler.m_defaultHeartbeatLocation, 1f/speed);
             }
 
             if (curvePos <= -1)
             {
-                enemyAgent.Appearance.InterpolateGlow(glowColor * 0.5f, enemyAgent.MaterialHandler.m_defaultHeartbeatLocation, 1f/speed);
+                EnemyAgent.Appearance.InterpolateGlow(glowColor * 0.5f, EnemyAgent.MaterialHandler.m_defaultHeartbeatLocation, 1f/speed);
             }
         }
     }

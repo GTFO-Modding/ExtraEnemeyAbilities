@@ -35,94 +35,98 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\core\0Harmony.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="BepInEx.Core">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\core\BepInEx.Core.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="BepInEx.IL2CPP">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\core\BepInEx.IL2CPP.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="CellSound-ASM">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\unhollowed\CellSound-ASM.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="GlobalFramework-ASM">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\unhollowed\GlobalFramework-ASM.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Il2Cppmscorlib">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\unhollowed\Il2Cppmscorlib.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Modules-ASM">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\unhollowed\Modules-ASM.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="MTFO">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\plugins\MTFO.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=3.7.1.6, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\plugins\Newtonsoft.Json.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="SNet_ASM">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\unhollowed\SNet_ASM.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="UnhollowerBaseLib">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\core\UnhollowerBaseLib.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnhollowerRuntimeLib">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\core\UnhollowerRuntimeLib.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\unhollowed\UnityEngine.CoreModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.PhysicsModule">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\unhollowed\UnityEngine.PhysicsModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Utils-ASM">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\unhollowed\Utils-ASM.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Wwise-ASM">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\unhollowed\Wwise-ASM.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Components\ExploderBase.cs" />
+    <Compile Include="Components\Abilities\EMPAbility.cs" />
+    <Compile Include="Components\CustomAbility.cs" />
+    <Compile Include="Components\EMPComponent.cs" />
+    <Compile Include="Components\Abilities\ExploderAbility.cs" />
+    <Compile Include="Components\PlayerEMPManager.cs" />
     <Compile Include="ConfigManager.cs" />
+    <Compile Include="Patches\Inject.cs" />
     <Compile Include="Patches\Patch_ES_Hibernate.cs" />
-    <Compile Include="Patches\Patch_Exploder.cs" />
+    <Compile Include="Patches\Patch_FogSphere.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="ExtraEnemies.cs" />
     <Compile Include="Patches\Patch_BuildEnemyPrefab.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\Coroutine.cs" />
+    <Compile Include="Utilities\DebugTester.cs" />
     <Compile Include="Utilities\ExplosionUtil.cs" />
     <Compile Include="Utilities\Util.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>C:\Users\Dak\AppData\Roaming\r2modmanPlus-local\GTFO\profiles\Offshoot - Dev\BepInEx\core\0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="BepInEx.Core">
+      <HintPath>C:\Users\Dak\AppData\Roaming\r2modmanPlus-local\GTFO\profiles\Offshoot - Dev\BepInEx\core\BepInEx.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="BepInEx.IL2CPP">
+      <HintPath>C:\Users\Dak\AppData\Roaming\r2modmanPlus-local\GTFO\profiles\Offshoot - Dev\BepInEx\core\BepInEx.IL2CPP.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="CellSound-ASM">
+      <HintPath>C:\Users\Dak\AppData\Roaming\r2modmanPlus-local\GTFO\profiles\Offshoot - Dev\BepInEx\unhollowed\CellSound-ASM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="GlobalFramework-ASM">
+      <HintPath>C:\Users\Dak\AppData\Roaming\r2modmanPlus-local\GTFO\profiles\Offshoot - Dev\BepInEx\unhollowed\GlobalFramework-ASM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Il2Cppmscorlib">
+      <HintPath>C:\Users\Dak\AppData\Roaming\r2modmanPlus-local\GTFO\profiles\Offshoot - Dev\BepInEx\unhollowed\Il2Cppmscorlib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Il2CppSystem">
+      <HintPath>C:\Users\Dak\AppData\Roaming\r2modmanPlus-local\GTFO\profiles\Offshoot - Dev\BepInEx\unhollowed\Il2CppSystem.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Modules-ASM">
+      <HintPath>C:\Users\Dak\AppData\Roaming\r2modmanPlus-local\GTFO\profiles\Offshoot - Dev\BepInEx\unhollowed\Modules-ASM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="MTFO, Version=4.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Users\Dak\AppData\Roaming\r2modmanPlus-local\GTFO\profiles\Offshoot - Dev\BepInEx\plugins\MTFO.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="SNet_ASM">
+      <HintPath>C:\Users\Dak\AppData\Roaming\r2modmanPlus-local\GTFO\profiles\Offshoot - Dev\BepInEx\unhollowed\SNet_ASM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnhollowerBaseLib">
+      <HintPath>C:\Users\Dak\AppData\Roaming\r2modmanPlus-local\GTFO\profiles\Offshoot - Dev\BepInEx\core\UnhollowerBaseLib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnhollowerRuntimeLib">
+      <HintPath>C:\Users\Dak\AppData\Roaming\r2modmanPlus-local\GTFO\profiles\Offshoot - Dev\BepInEx\core\UnhollowerRuntimeLib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>C:\Users\Dak\AppData\Roaming\r2modmanPlus-local\GTFO\profiles\Offshoot - Dev\BepInEx\unhollowed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule, Version=3.7.1.6, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Users\Dak\AppData\Roaming\r2modmanPlus-local\GTFO\profiles\Offshoot - Dev\BepInEx\unhollowed\UnityEngine.InputLegacyModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>C:\Users\Dak\AppData\Roaming\r2modmanPlus-local\GTFO\profiles\Offshoot - Dev\BepInEx\unhollowed\UnityEngine.PhysicsModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Utils-ASM">
+      <HintPath>C:\Users\Dak\AppData\Roaming\r2modmanPlus-local\GTFO\profiles\Offshoot - Dev\BepInEx\unhollowed\Utils-ASM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Wwise-ASM">
+      <HintPath>C:\Users\Dak\AppData\Roaming\r2modmanPlus-local\GTFO\profiles\Offshoot - Dev\BepInEx\unhollowed\Wwise-ASM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(ProjectDir)bin\Debug\$(ProjectName).dll" "C:\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\plugins" /Y</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(ProjectDir)bin\Debug\$(ProjectName).dll" "C:\Users\Dak\AppData\Roaming\r2modmanPlus-local\GTFO\profiles\Offshoot - Dev\BepInEx\plugins" /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>

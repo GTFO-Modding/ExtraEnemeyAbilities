@@ -2,6 +2,7 @@
 using BepInEx.IL2CPP;
 using BepInEx.Logging;
 using ExtraEnemyAbilities.Components;
+using ExtraEnemyAbilities.Utilities;
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace ExtraEnemyAbilities
             MODNAME = "ExtraEnemyAbilities",
             AUTHOR = "dak",
             GUID = "com." + AUTHOR + "." + MODNAME,
-            VERSION = "0.0.3";
+            VERSION = "0.0.4";
 
         public static ManualLogSource log;
 
@@ -30,12 +31,18 @@ namespace ExtraEnemyAbilities
         public override void Load()
         {
             //Inject
-            ClassInjector.RegisterTypeInIl2Cpp<ExploderBase>();
+            ClassInjector.RegisterTypeInIl2Cpp<CustomAbility>();
+            ClassInjector.RegisterTypeInIl2Cpp<ExploderAbility>();
+            ClassInjector.RegisterTypeInIl2Cpp<EMPComponent>();
+            ClassInjector.RegisterTypeInIl2Cpp<PlayerEMPManager>();
+            ClassInjector.RegisterTypeInIl2Cpp<EMPAbility>();
+#if DEBUG
+            ClassInjector.RegisterTypeInIl2Cpp<DebugTester>();
+#endif
 
             log = Log;
             var harmony = new Harmony(GUID);
             harmony.PatchAll();
-
         }
     }
 }

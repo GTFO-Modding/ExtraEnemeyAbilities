@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using Enemies;
 
 namespace ExtraEnemyAbilities
 {
@@ -8,43 +9,93 @@ namespace ExtraEnemyAbilities
     {
 		public static bool HasLocalPath;
 		public static string LocalPath;
-		public static Dictionary<uint, ExploderConfig> ExploderConfigDictionary { get { return ExploderConfigHolder.ExploderConfigs; } }
+		public static Dictionary<uint, ExploderConfig> ExploderConfigDictionary { get { return ConfigHolder.ExploderConfigs; } }
+		public static Dictionary<uint, EMPConfig> EMPConfigDictionary { get { return ConfigHolder.EMPConfigs; } }
+		public static List<uint> CustomIDs;
 
-		private static ExploderConfigHolder ExploderConfigHolder;
-
-
+		private static ConfigHolder ConfigHolder;
 
 		static ConfigManager()
         {
 			if (!MTFO.Managers.ConfigManager.HasCustomContent) return;
+			CustomIDs = new List<uint>();
 
-			var Dictionary = new Dictionary<uint, ExploderConfig>
+			var exploderAbilities = new Dictionary<uint, ExploderConfig>
 			{
-				{ 0, new ExploderConfig() { Radius = 0, Damage = 0, NoiseMin = 0, NoiseMax = 0, InfectionAmount = 0, NoExplosionOnDeath = false, EMPEnabled = false, EMPRange = 0, EMPDuration = 0, ColorData = new ColorData() { a = 0, r = 0, g = 0, b = 0 } } }
+				{ 0, new ExploderConfig() }
             };
-            ExploderConfigHolder = new ExploderConfigHolder() { ExploderConfigs = Dictionary };
+			var empAbilities = new Dictionary<uint, EMPConfig>
+			{
+				{ 0, new EMPConfig() }
+			};
+            ConfigHolder = new ConfigHolder() { ExploderConfigs = exploderAbilities, EMPConfigs = empAbilities };
 			string customContentPath = MTFO.Managers.ConfigManager.CustomPath;
 
 			//Setup Exploder Config
-			string exploderPath = Path.Combine(customContentPath, "ExploderConfig.json");
+			MigrateOldConfig(customContentPath);
 
-			if (File.Exists(exploderPath))
+			string customAbilityConfig = Path.Combine(customContentPath, "AbilityConfig.json");
+
+			if (File.Exists(customAbilityConfig))
             {
 				Log.Debug("Loading from disk");
-				ExploderConfigHolder = JsonConvert.DeserializeObject<ExploderConfigHolder>(File.ReadAllText(exploderPath));
-				Log.Debug(File.ReadAllText(exploderPath));
+				ConfigHolder = JsonConvert.DeserializeObject<ConfigHolder>(File.ReadAllText(customAbilityConfig));
+				Log.Debug(File.ReadAllText(customAbilityConfig));
             } else
             {
 				Log.Debug("Writing to disk");
-				File.WriteAllText(exploderPath, JsonConvert.SerializeObject(ExploderConfigHolder));
+				File.WriteAllText(customAbilityConfig, JsonConvert.SerializeObject(ConfigHolder));
+            }
+
+			if (ExploderConfigDictionary != null)
+            {
+				CustomIDs.AddRange(ExploderConfigDictionary.Keys);
+            }
+			if (EMPConfigDictionary != null)
+            {
+				CustomIDs.AddRange(EMPConfigDictionary.Keys);
             }
         }
+
+		public static ES_StateEnum GetEndState(uint ID)
+        {
+			if (ExploderConfigDictionary != null)
+            {
+				if (ExploderConfigDictionary.ContainsKey(ID))
+                {
+					return ES_StateEnum.Dead;
+                }
+            }
+
+
+			return ES_StateEnum.PathMove;
+        }
+
+		private static void MigrateOldConfig(string customContentPath)
+		{
+			string newPath = Path.Combine(customContentPath, "AbilityConfig.json");
+
+			string oldPath = Path.Combine(customContentPath, "ExploderConfig.json");
+
+			if (File.Exists(oldPath))
+			{
+				Log.Message("Updating old config");
+				File.Move(oldPath, newPath);
+			}
+		}
 	}
 
-	public struct ExploderConfigHolder
+	public struct ConfigHolder
 	{
 		public Dictionary<uint, ExploderConfig> ExploderConfigs;
+		public Dictionary<uint, EMPConfig> EMPConfigs;
 	}
+
+	public struct EMPConfig
+    {
+		public float Radius;
+		public float Duration;
+    }
 
 	public struct ExploderConfig
     {
@@ -54,9 +105,6 @@ namespace ExtraEnemyAbilities
 		public float NoiseMax;
 		public float InfectionAmount;
 		public bool NoExplosionOnDeath;
-        public bool EMPEnabled;
-        public float EMPRange;
-        public float EMPDuration;   
 		public ColorData ColorData;
     }
 
