@@ -26,7 +26,7 @@ namespace ExtraEnemyAbilities.Components
                 return Duration - 2;
             } 
         }
-        private float timer = 0;
+        public float Timer = 0;
         public bool triggered = false;
         PlayerAgent playerAgent;
         private PlayerInventoryBase PlayerInventoryBase;
@@ -58,12 +58,12 @@ namespace ExtraEnemyAbilities.Components
 
         private IEnumerator FlashUI()
         {
-            ExtraEnemyAbilities.log.LogDebug("Flickering HUD");
+            //ExtraEnemyAbilities.log.LogDebug("Flickering HUD");
             for (int i = 0; i < 200; i++)
             {
                 FlashlightEnabled = UnityEngine.Random.RandomRange(0, 2) == 1;
                 HUDEnabled = UnityEngine.Random.RandomRange(0, 2) == 1;
-                ExtraEnemyAbilities.log.LogDebug($"\nFlashlight: {FlashlightEnabled}\nHUD: {HUDEnabled}");
+                //ExtraEnemyAbilities.log.LogDebug($"\nFlashlight: {FlashlightEnabled}\nHUD: {HUDEnabled}");
                 yield return new WaitForSeconds(UnityEngine.Random.Range(0.1f, 0.2f));
             }
 
@@ -79,12 +79,12 @@ namespace ExtraEnemyAbilities.Components
 
             UpdateFlashlightAndHUD();
 
-            if (timer >= FlashDuration)
+            if (Timer >= FlashDuration)
             {
                 TriggerUIFlash();
             }
 
-            if (timer >= Duration)
+            if (Timer >= Duration)
             {
                 MelonCoroutines.Stop(coroutine);
                 FlashlightEnabled = true;
@@ -93,7 +93,7 @@ namespace ExtraEnemyAbilities.Components
                 Destroy(this);
             }
 
-            timer += Time.deltaTime;
+            Timer += Time.deltaTime;
         }
     }
 }
