@@ -63,9 +63,6 @@
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\unhollowed\Modules-ASM.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="MTFO">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\plugins\MTFO.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=3.7.1.6, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\plugins\Newtonsoft.Json.dll</HintPath>
@@ -111,6 +108,7 @@
   <ItemGroup>
     <Compile Include="Components\ExploderBase.cs" />
     <Compile Include="ConfigManager.cs" />
+    <Compile Include="Utilities\MTFOConfigUtil.cs" />
     <Compile Include="Patches\Patch_ES_Hibernate.cs" />
     <Compile Include="Patches\Patch_Exploder.cs" />
     <Compile Include="Log.cs" />

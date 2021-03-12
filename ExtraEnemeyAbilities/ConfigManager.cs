@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using ExtraEnemyAbilities.Utilities;
 
 namespace ExtraEnemyAbilities
 {
@@ -16,14 +17,14 @@ namespace ExtraEnemyAbilities
 
 		static ConfigManager()
         {
-			if (!MTFO.Managers.ConfigManager.HasCustomContent) return;
+			if (!MTFOConfigUtil.HasCustomContent) return;
 
 			var Dictionary = new Dictionary<uint, ExploderConfig>
 			{
 				{ 0, new ExploderConfig() { Radius = 0, Damage = 0, NoiseMin = 0, NoiseMax = 0, InfectionAmount = 0, NoExplosionOnDeath = false, EMPEnabled = false, EMPRange = 0, EMPDuration = 0, ColorData = new ColorData() { a = 0, r = 0, g = 0, b = 0 } } }
             };
             ExploderConfigHolder = new ExploderConfigHolder() { ExploderConfigs = Dictionary };
-			string customContentPath = MTFO.Managers.ConfigManager.CustomPath;
+			string customContentPath = MTFOConfigUtil.CustomPath;
 
 			//Setup Exploder Config
 			string exploderPath = Path.Combine(customContentPath, "ExploderConfig.json");
