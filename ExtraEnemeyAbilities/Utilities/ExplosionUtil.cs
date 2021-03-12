@@ -49,6 +49,7 @@ namespace ExtraEnemyAbilities.Utilities
                         }
                     } else
                     {
+#if DEBUG
                         GameObject mySphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                         mySphere.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
                         mySphere.transform.position = raycastHit.point;
@@ -56,6 +57,7 @@ namespace ExtraEnemyAbilities.Utilities
                         var mesh = mySphere.GetComponent<MeshRenderer>();
                         mesh.material.color = Color.red;
                         GameObject.Destroy(col);
+#endif
                     }
 
 
