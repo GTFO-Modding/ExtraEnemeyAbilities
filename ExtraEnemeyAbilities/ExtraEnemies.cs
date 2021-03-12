@@ -23,7 +23,7 @@ namespace ExtraEnemyAbilities
             MODNAME = "ExtraEnemyAbilities",
             AUTHOR = "dak",
             GUID = "com." + AUTHOR + "." + MODNAME,
-            VERSION = "0.0.4";
+            VERSION = "0.0.5";
 
         public static ManualLogSource log;
 
@@ -36,6 +36,7 @@ namespace ExtraEnemyAbilities
             ClassInjector.RegisterTypeInIl2Cpp<EMPComponent>();
             ClassInjector.RegisterTypeInIl2Cpp<PlayerEMPManager>();
             ClassInjector.RegisterTypeInIl2Cpp<EMPAbility>();
+            ClassInjector.RegisterTypeInIl2Cpp<LightEMPManager>();
 #if DEBUG
             ClassInjector.RegisterTypeInIl2Cpp<DebugTester>();
 #endif
