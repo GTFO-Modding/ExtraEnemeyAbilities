@@ -21,9 +21,9 @@ namespace Offshoot.Components
                 Log.Debug("Triggered vanilla ability");
                 return true;
             }
-            customAbility.Trigger();
+            var runOrig = customAbility.Trigger();
             Log.Debug("Triggered custom ability");
-            return false;
+            return runOrig;
         }
     }
 

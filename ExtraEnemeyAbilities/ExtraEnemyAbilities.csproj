@@ -34,11 +34,22 @@
   <PropertyGroup>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TestAbilities|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\TestAbilities\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;TAB</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Components\Abilities\DamageCloudAbilitity.cs" />
     <Compile Include="Components\Abilities\EMPAbility.cs" />
     <Compile Include="Components\CustomAbility.cs" />
     <Compile Include="Components\EMPComponent.cs" />
     <Compile Include="Components\Abilities\ExploderAbility.cs" />
+    <Compile Include="Components\LightEMPManager.cs" />
     <Compile Include="Components\PlayerEMPManager.cs" />
     <Compile Include="ConfigManager.cs" />
     <Compile Include="Patches\Inject.cs" />
@@ -127,6 +138,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(ProjectDir)bin\Debug\$(ProjectName).dll" "C:\Users\Dak\AppData\Roaming\r2modmanPlus-local\GTFO\profiles\Offshoot - Dev\BepInEx\plugins" /Y</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(ProjectDir)bin\TestAbilities\$(ProjectName).dll" "C:\Users\Dak\AppData\Roaming\r2modmanPlus-local\GTFO\profiles\Offshoot - Dev\BepInEx\plugins" /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>

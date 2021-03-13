@@ -29,6 +29,7 @@ namespace ExtraEnemyAbilities.Components
         private float stateTimer = 0;
         private EMPState state = EMPState.BuildUp;
         private Vector3 fogPos;
+        public static readonly Color EMPColor = new Color(0.525f, 0.956f, 0.886f, 1.0f);
         public void Trigger()
         {
             lightCollection = LG_LightCollection.Create(EnemyAgent.CourseNode, EnemyAgent.EyePosition, LG_LightCollectionSorting.Distance, EMPConfig.Radius);
@@ -43,15 +44,16 @@ namespace ExtraEnemyAbilities.Components
                 {
                     break;
                 }
-
-                LightEMPManager lightEMPMan = collectedLight.light.gameObject.AddComponent<LightEMPManager>();
-                lightEMPMan.Duration = EMPConfig.Duration;
-                lightEMPMan.CollectedLight = collectedLight;
-                lightEMPMan.StartFlickerAt = UnityEngine.Random.RandomRange((float)(EMPConfig.Duration * 0.5), EMPConfig.Duration);
-
-                //collectedLight.light.SetEnabled(false);
-                //collectedLight.intensityProgression = 0;
-                //lightCards.Add(collectedLight);
+                LightEMPManager prevLightEMPMan = collectedLight.light.gameObject.GetComponent<LightEMPManager>();
+                if (prevLightEMPMan != null)
+                {
+                    prevLightEMPMan.ResetDuration(EMPConfig);
+                } else
+                {
+                    LightEMPManager lightEMPMan = collectedLight.light.gameObject.AddComponent<LightEMPManager>();
+                    lightEMPMan.ResetDuration(EMPConfig);
+                    lightEMPMan.CollectedLight = collectedLight;
+                }
             }
 
             var targets = Physics.OverlapSphere(EnemyAgent.EyePosition, EMPConfig.Radius, LayerManager.MASK_EXPLOSION_TARGETS);
@@ -67,15 +69,14 @@ namespace ExtraEnemyAbilities.Components
                         var existingPEMPM = playerAgent.GetComponent<PlayerEMPManager>();
                         if (existingPEMPM != null)
                         {
-                            existingPEMPM.Timer = 0;
+                            //TODO Duration
+                            existingPEMPM.ResetDuration(EMPConfig.Duration);
                         } else
                         {
                             PlayerEMPManager playerEMPManager = playerAgent.gameObject.AddComponent<PlayerEMPManager>();
                             if (playerEMPManager != null)
                             {
-                                playerEMPManager.FlashlightEnabled = false;
-                                playerEMPManager.HUDEnabled = false;
-                                playerEMPManager.Duration = EMPConfig.Duration;
+                                playerEMPManager.ResetDuration(EMPConfig.Duration);
                                 playerEMPManager.triggered = true;
                             }
                             playerCount++;
@@ -106,10 +107,13 @@ namespace ExtraEnemyAbilities.Components
                     {
                         LightWave();
                         stateTimer = Clock.Time + 1.5f;
-                        state = EMPState.WaveExpand;
-                        EnemyAgent.Voice.PlayVoiceEvent(EVENTS.LIGHTS_OFF_GLOBAL);
-                        EnemyAgent.Voice.PlayVoiceEvent(EVENTS.SCOUT_DETECT_SCREAM);
+                        state = EMPState.LightOffSFX;
                     }
+                    break;
+
+                case EMPState.LightOffSFX:
+                    EnemyAgent.Voice.PlayVoiceEvent(EVENTS.LIGHTS_OFF_GLOBAL);
+                    state = EMPState.WaveExpand;
                     break;
                 case EMPState.WaveExpand:
                     if (stateTimer < Clock.Time)
@@ -154,6 +158,7 @@ namespace ExtraEnemyAbilities.Components
         {
             BuildUp,
             WaveStart,
+            LightOffSFX,
             WaveExpand,
             WaveEnd,
             Done
@@ -168,7 +173,7 @@ namespace ExtraEnemyAbilities.Components
             {
                 fogSphereAdd.SetPositionRange(fogPos, 2f);
                 fogSphereAdd.SetDensity(1f);
-                fogSphereAdd.SetRadiance(Color.cyan, 1f);
+                fogSphereAdd.SetRadiance(EMPColor, 1f);
             }
             if (fogSphereSub.TryAllocate())
             {

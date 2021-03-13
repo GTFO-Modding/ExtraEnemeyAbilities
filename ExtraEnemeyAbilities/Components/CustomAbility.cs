@@ -14,6 +14,8 @@ namespace ExtraEnemyAbilities.Components
         {
         }
 
-        public virtual void Trigger() { }
+        public Color GlowColor;
+        public EnemyAgent Agent;
+        public virtual bool Trigger() { throw new NotImplementedException(); }
     }
 }

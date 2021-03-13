@@ -8,7 +8,18 @@ using UnityEngine;
 
 namespace ExtraEnemyAbilities.Utilities
 {
-    public static class MelonCoroutines
+    public class EEACoroutineManager : MonoBehaviour
+    {
+        public EEACoroutineManager(IntPtr intPtr) : base(intPtr)
+        {
+        }
+        public void Update()
+        {
+            EEA_MelonCoroutines.Process();
+        }
+    }
+
+    internal static class EEA_MelonCoroutines
     {
         private struct CoroTuple
         {

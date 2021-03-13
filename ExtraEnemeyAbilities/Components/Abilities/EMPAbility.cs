@@ -14,24 +14,38 @@ namespace ExtraEnemyAbilities.Components
         {
         }
 
-        private EnemyAgent EnemyAgent;
         private EMPConfig EMPConfig;
 
         public void Awake()
         {
-            EnemyAgent = GetComponent<EnemyAgent>();
-            EMPConfig = ConfigManager.EMPConfigDictionary[EnemyAgent.EnemyDataID];
+            GlowColor = EMPComponent.EMPColor;
+            Agent = GetComponent<EnemyAgent>();
+            EMPConfig = ConfigManager.EMPConfigDictionary[Agent.EnemyDataID];
         }
 
-        public override void Trigger()
+        public void Update()
+        {
+            if (Agent.Alive)
+            {
+                Agent.Appearance.InterpolateGlow(GlowColor, new Vector4(0f, 1.25f, 0f, 1.5f), 1f);
+            } else
+            {
+                Agent.Appearance.InterpolateGlow(Color.black, new Vector4(0f, 1.25f, 0f, 1.5f), 2f);
+                Destroy(this);
+            }
+        }
+
+        public override bool Trigger()
         {
             GameObject EMPObject = new GameObject();
 
             EMPObject.AddComponent<EMPComponent>();
             EMPComponent emp = EMPObject.GetComponent<EMPComponent>();
-            emp.EnemyAgent = EnemyAgent;
+            emp.EnemyAgent = Agent;
             emp.EMPConfig = EMPConfig;
             emp.Trigger();
+
+            return false;
         }
     }
 }

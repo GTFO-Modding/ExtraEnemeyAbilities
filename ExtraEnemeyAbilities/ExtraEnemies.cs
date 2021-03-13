@@ -2,6 +2,7 @@
 using BepInEx.IL2CPP;
 using BepInEx.Logging;
 using ExtraEnemyAbilities.Components;
+using ExtraEnemyAbilities.Components.Abilities;
 using ExtraEnemyAbilities.Utilities;
 using HarmonyLib;
 using System;
@@ -37,6 +38,8 @@ namespace ExtraEnemyAbilities
             ClassInjector.RegisterTypeInIl2Cpp<PlayerEMPManager>();
             ClassInjector.RegisterTypeInIl2Cpp<EMPAbility>();
             ClassInjector.RegisterTypeInIl2Cpp<LightEMPManager>();
+            ClassInjector.RegisterTypeInIl2Cpp<EEACoroutineManager>();
+            ClassInjector.RegisterTypeInIl2Cpp<DamageCloudAbilitity>();
 #if DEBUG
             ClassInjector.RegisterTypeInIl2Cpp<DebugTester>();
 #endif

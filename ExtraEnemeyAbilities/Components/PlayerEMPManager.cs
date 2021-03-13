@@ -34,6 +34,15 @@ namespace ExtraEnemyAbilities.Components
         public bool FlashlightEnabled = false;
         public bool HUDEnabled = false;
 
+        public void ResetDuration(float newDuration)
+        {
+            Duration = newDuration;
+            Timer = 0;
+            EEA_MelonCoroutines.Stop(coroutine);
+            FlashlightEnabled = false;
+            HUDEnabled = false;
+        }
+
         public void Awake()
         {
             playerAgent = gameObject.GetComponent<PlayerAgent>();
@@ -51,9 +60,8 @@ namespace ExtraEnemyAbilities.Components
         {
             if (coroutine == null)
             {
-                coroutine = (IEnumerator)MelonCoroutines.Start(FlashUI());
+                coroutine = (IEnumerator)EEA_MelonCoroutines.Start(FlashUI());
             }
-            MelonCoroutines.Process();
         }
 
         private IEnumerator FlashUI()
@@ -86,7 +94,7 @@ namespace ExtraEnemyAbilities.Components
 
             if (Timer >= Duration)
             {
-                MelonCoroutines.Stop(coroutine);
+                EEA_MelonCoroutines.Stop(coroutine);
                 FlashlightEnabled = true;
                 HUDEnabled = true;
                 UpdateFlashlightAndHUD();

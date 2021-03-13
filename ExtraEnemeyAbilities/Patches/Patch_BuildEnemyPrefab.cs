@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Enemies;
 using ExtraEnemyAbilities.Components;
+using ExtraEnemyAbilities.Components.Abilities;
 using GameData;
 using HarmonyLib;
 using UnityEngine;
@@ -16,13 +17,6 @@ namespace ExtraEnemyAbilities.Patches
     {
         public static void Postfix(EnemyDataBlock data)
         {
-            //if (data.persistentID == 303)
-            //{
-            //    Log.Debug($"Created bleeder type enemy with name of {data.name}");
-            //    GameObject BleederPrefab = EnemyPrefabManager.Current.m_enemyPrefabs[data.persistentID];
-            //    BleederPrefab.AddComponent<BleederBase>();
-            //}
-
             //This should probably be some sort of generic
 
             if (ConfigManager.ExploderConfigDictionary != null)
@@ -35,7 +29,14 @@ namespace ExtraEnemyAbilities.Patches
                     return;
                 }
             }
-
+            if (data.persistentID == 303)
+            {
+                Log.Debug($"Created brap type enemy with name of '{data.name}'");
+                GameObject EMPPrefab = EnemyPrefabManager.Current.m_enemyPrefabs[data.persistentID];
+                EMPPrefab.AddComponent<DamageCloudAbilitity>();
+                return;
+            }
+#if TAB
             if (ConfigManager.EMPConfigDictionary != null)
             {
                 if (ConfigManager.EMPConfigDictionary.ContainsKey(data.persistentID))
@@ -46,6 +47,7 @@ namespace ExtraEnemyAbilities.Patches
                     return;
                 }
             }
+#endif
         }
     }
 }

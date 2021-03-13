@@ -22,4 +22,15 @@ namespace ExtraEnemyAbilities.Patches
         }
     }
 #endif
+
+    [HarmonyPatch(typeof(CM_PageRundown_New), "Setup")]
+    public class InjectCoroutine
+    {
+        static void Postfix()
+        {
+            GameObject gameObject = new GameObject();
+            gameObject.AddComponent<EEACoroutineManager>();
+            UnityEngine.Object.DontDestroyOnLoad(gameObject);
+        }
+    }
 }

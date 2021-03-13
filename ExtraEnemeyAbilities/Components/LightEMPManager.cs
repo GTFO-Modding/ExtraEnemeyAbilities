@@ -18,28 +18,51 @@ namespace ExtraEnemyAbilities.Components
         public float Duration;
         public CollectedLight CollectedLight;
         public float StartFlickerAt;
+        private float buildIntensity;
         private float stateTimer;
         private LightState state;
         private IEnumerator coroutine;
         private enum LightState
         {
+            Overload,
             Off,
             Flicker,
             On
         }
 
+        public void ResetDuration(EMPConfig eMPConfig)
+        {
+            stateTimer = 0;
+            if (state != LightState.Overload)
+            {
+                state = LightState.Off;
+            }
+            EEA_MelonCoroutines.Stop(coroutine);
+            StartFlickerAt = UnityEngine.Random.RandomRange((float)(eMPConfig.Duration * 0.5), eMPConfig.Duration);
+            Duration = eMPConfig.Duration;
+        }
+
         void Awake()
         {
-            state = LightState.Off;
+            state = LightState.Overload;
             stateTimer = 0;
         }
 
         void Update()
         {
-            MelonCoroutines.Process();
-            switch(state)
+            switch (state)
             {
+                case LightState.Overload:
+                    CollectedLight.light.ChangeIntensity(CollectedLight.originalIntensity + buildIntensity);
+                    buildIntensity += 1f;
+                    if (CollectedLight.originalIntensity + buildIntensity > 5f)
+                    {
+                        state = LightState.Off;
+                    }
+                    break;
+
                 case LightState.Off:
+                    CollectedLight.light.ChangeIntensity(0);
                     state = LightState.Flicker;
                     stateTimer = Clock.Time + StartFlickerAt;
                     break;
@@ -47,34 +70,38 @@ namespace ExtraEnemyAbilities.Components
                 case LightState.Flicker:
                     if (stateTimer < Clock.Time)
                     {
-                        coroutine = MelonCoroutines.Start(FlickerLight(CollectedLight)) as IEnumerator;
+                        coroutine = EEA_MelonCoroutines.Start(FlickerLight(CollectedLight)) as IEnumerator;
                         state = LightState.On;
-                        stateTimer = Clock.Time + Duration - StartFlickerAt;
+                        stateTimer = Clock.Time + Duration - StartFlickerAt - UnityEngine.Random.Range(0, 5f);
                     }
                     break;
 
                 case LightState.On:
-                    MelonCoroutines.Stop(coroutine);
-                    CollectedLight.light.SetEnabled(true);
-                    CollectedLight.light.ChangeIntensity(CollectedLight.originalIntensity);
-                    Destroy(this);
+                    if (stateTimer < Clock.Time)
+                    {
+                        EEA_MelonCoroutines.Stop(coroutine);
+                        CollectedLight.light.ChangeIntensity(CollectedLight.originalIntensity);
+                        Destroy(this);
+                    }
                     break;
             }
         }
 
         private IEnumerator FlickerLight(CollectedLight cLight)
         {
-            cLight.light.SetEnabled(true);
             cLight.light.ChangeIntensity(cLight.originalIntensity / UnityEngine.Random.Range(1, 3));
             yield return new WaitForSeconds(UnityEngine.Random.Range(0.1f, 0.2f));
+
             cLight.light.ChangeIntensity(cLight.originalIntensity / UnityEngine.Random.Range(1, 3));
             yield return new WaitForSeconds(UnityEngine.Random.Range(0.1f, 0.2f));
+
             cLight.light.ChangeIntensity(cLight.originalIntensity / UnityEngine.Random.Range(1, 3));
             yield return new WaitForSeconds(UnityEngine.Random.Range(0.1f, 0.2f));
+
             cLight.light.ChangeIntensity(cLight.originalIntensity / UnityEngine.Random.Range(1, 3));
             yield return new WaitForSeconds(UnityEngine.Random.Range(0.1f, 0.2f));
-            cLight.light.SetEnabled(false);
-            coroutine = MelonCoroutines.Start(FlickerLight(CollectedLight)) as IEnumerator;
+
+            coroutine = EEA_MelonCoroutines.Start(FlickerLight(cLight)) as IEnumerator;
             yield break;
         }
     }

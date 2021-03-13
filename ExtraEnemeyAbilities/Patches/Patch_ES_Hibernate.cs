@@ -7,13 +7,14 @@ namespace ExtraEnemyAbilities.Patches
     [HarmonyPatch(typeof(ES_Hibernate), "UpdateDetectionAnim")]
     class Patch_ES_Hibernate
     {
+        //This could be optimized
         static void Prefix(ES_Hibernate __instance)
         {
-            var exploderBase = __instance.m_enemyAgent.GetComponent<ExploderAbility>();
-            if (exploderBase != null)
+            var customAbility = __instance.m_enemyAgent.GetComponent<CustomAbility>();
+            if (customAbility != null)
             {
-                __instance.m_detectingColorVec = exploderBase.glowColor;
-                __instance.m_heartbeatColorVec = exploderBase.glowColor;
+                __instance.m_detectingColorVec = customAbility.GlowColor;
+                __instance.m_heartbeatColorVec = customAbility.GlowColor;
             }
         }
     }
