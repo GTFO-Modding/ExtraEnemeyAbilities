@@ -114,6 +114,12 @@
       <HintPath>C:\Users\Dak\AppData\Roaming\r2modmanPlus-local\GTFO\profiles\Offshoot - Dev\BepInEx\core\UnhollowerRuntimeLib.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.AIModule">
+      <HintPath>C:\Users\Dak\AppData\Roaming\r2modmanPlus-local\GTFO\profiles\Offshoot - Dev\BepInEx\unhollowed\UnityEngine.AIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AnimationModule">
+      <HintPath>C:\Users\Dak\AppData\Roaming\r2modmanPlus-local\GTFO\profiles\Offshoot - Dev\BepInEx\unhollowed\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>C:\Users\Dak\AppData\Roaming\r2modmanPlus-local\GTFO\profiles\Offshoot - Dev\BepInEx\unhollowed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>

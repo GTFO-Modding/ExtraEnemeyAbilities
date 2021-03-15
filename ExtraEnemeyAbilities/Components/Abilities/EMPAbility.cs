@@ -15,6 +15,7 @@ namespace ExtraEnemyAbilities.Components
         }
 
         private EMPConfig EMPConfig;
+        private int m_lastAnimIndex;
 
         public void Awake()
         {
@@ -37,14 +38,25 @@ namespace ExtraEnemyAbilities.Components
 
         public override bool Trigger()
         {
-            GameObject EMPObject = new GameObject();
+            //GameObject EMPObject = new GameObject();
+            //
+            //EMPObject.AddComponent<EMPComponent>();
+            //EMPComponent emp = EMPObject.GetComponent<EMPComponent>();
+            //emp.EnemyAgent = Agent;
+            //emp.EMPConfig = EMPConfig;
+            //emp.Trigger();
+            //m_locomotion.GetUniqueAnimIndex(EnemyLocomotion.s_hashAbilityUse, ref m_lastAnimIndex);
+            //Agent.Locomotion.GetUniqueAnimIndex(EnemyLocomotion.s_hashAbilityUse, ref m_lastAnimIndex);
 
-            EMPObject.AddComponent<EMPComponent>();
-            EMPComponent emp = EMPObject.GetComponent<EMPComponent>();
-            emp.EnemyAgent = Agent;
-            emp.EMPConfig = EMPConfig;
-            emp.Trigger();
+            Agent.AI.m_navMeshAgent.velocity = Vector3.zero;
+            if (Agent.AI.m_navMeshAgent.isOnNavMesh)
+            {
+                Agent.AI.m_navMeshAgent.isStopped = true;
+            }
+            Agent.AI.m_abilities.CanTriggerAbilities = false;
+            ExtraEnemyAbilities.log.LogDebug(Agent.AI.m_abilities.CanTriggerAbilities);
 
+            //Agent.Locomotion.m_animator.CrossFadeInFixedTime(EnemyLocomotion.s_hashAbilityUse[0], 1f);
             return false;
         }
     }

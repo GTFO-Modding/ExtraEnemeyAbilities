@@ -39,7 +39,6 @@ namespace ExtraEnemyAbilities.Components
 
             foreach (var collectedLight in lightCollection.collectedLights)
             {
-                ExtraEnemyAbilities.log.LogDebug($"Evaling light with distance of {collectedLight.distance}");
                 if (collectedLight.distance > EMPConfig.Radius)
                 {
                     break;
