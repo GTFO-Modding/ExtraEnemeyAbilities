@@ -52,6 +52,7 @@
     <Compile Include="Components\LightEMPManager.cs" />
     <Compile Include="Components\PlayerEMPManager.cs" />
     <Compile Include="ConfigManager.cs" />
+    <Compile Include="EEAGlobalState.cs" />
     <Compile Include="Patches\Inject.cs" />
     <Compile Include="Patches\Patch_ES_Hibernate.cs" />
     <Compile Include="Patches\Patch_FogSphere.cs" />

@@ -10,6 +10,7 @@ using Player;
 using AK;
 using FX_EffectSystem;
 using LevelGeneration;
+using StateMachines;
 
 namespace ExtraEnemyAbilities.Components
 {
@@ -49,6 +50,7 @@ namespace ExtraEnemyAbilities.Components
 
             Agent.add_OnDeadCallback((Action)(() => {
                 if (ExploderConfig.NoExplosionOnDeath) return;
+                if (Activated == true) return;
                 Trigger();
             }));
         }
@@ -78,8 +80,8 @@ namespace ExtraEnemyAbilities.Components
 
         public override bool Trigger()
         {
-            if (exploded == true) return false;
-            exploded = true;
+            Activated = true;
+            Agent.Locomotion.ChangeState((int)ES_StateEnum.Dead);
 
             Agent.Appearance.InterpolateGlow(GlowColor, 0.1f);
             var fx = s_explodeFXPool.AquireEffect();

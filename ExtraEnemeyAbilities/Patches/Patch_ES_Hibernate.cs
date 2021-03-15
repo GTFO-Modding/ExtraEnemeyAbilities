@@ -7,7 +7,7 @@ namespace ExtraEnemyAbilities.Patches
     [HarmonyPatch(typeof(ES_Hibernate), "UpdateDetectionAnim")]
     class Patch_ES_Hibernate
     {
-        //This could be optimized
+        //This is fucking awful
         static void Prefix(ES_Hibernate __instance)
         {
             var customAbility = __instance.m_enemyAgent.GetComponent<CustomAbility>();

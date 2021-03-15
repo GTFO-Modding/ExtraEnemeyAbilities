@@ -1,5 +1,6 @@
 ﻿using Enemies;
 using Player;
+using StateMachines;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,11 +16,9 @@ namespace ExtraEnemyAbilities.Components.Abilities
         {
         }
 
-        private bool triggered = false;
-
         public override bool Trigger()
         {
-            triggered = true;
+            Activated = true;
             return true;
         }
 
@@ -30,7 +29,7 @@ namespace ExtraEnemyAbilities.Components.Abilities
 
         public void Update()
         {
-            if (triggered == true && PlayerManager.TryGetLocalPlayerAgent(out PlayerAgent playerAgent))
+            if (Activated == true && PlayerManager.TryGetLocalPlayerAgent(out PlayerAgent playerAgent))
             {
                 if (Vector3.Distance(playerAgent.Position, Agent.Position) < 10)
                 {
