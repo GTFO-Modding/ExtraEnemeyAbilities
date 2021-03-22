@@ -2,36 +2,40 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using Enemies;
+using ExtraEnemyAbilities.Components;
+using System;
+using UnhollowerRuntimeLib;
 
 namespace ExtraEnemyAbilities
 {
+	//This is such a mess
     public static class ConfigManager
     {
 		public static bool HasLocalPath;
 		public static string LocalPath;
 		public static Dictionary<uint, ExploderConfig> ExploderConfigDictionary { get { return ConfigHolder.ExploderConfigs; } }
 		public static Dictionary<uint, EMPConfig> EMPConfigDictionary { get { return ConfigHolder.EMPConfigs; } }
-		public static List<uint> CustomIDs;
 
 		private static ConfigHolder ConfigHolder;
 
 		static ConfigManager()
         {
 			if (!MTFO.Managers.ConfigManager.HasCustomContent) return;
-			CustomIDs = new List<uint>();
 
 			var exploderAbilities = new Dictionary<uint, ExploderConfig>
 			{
 				{ 0, new ExploderConfig() }
             };
+
 			var empAbilities = new Dictionary<uint, EMPConfig>
 			{
 				{ 0, new EMPConfig() }
 			};
+
             ConfigHolder = new ConfigHolder() { ExploderConfigs = exploderAbilities, EMPConfigs = empAbilities };
 			string customContentPath = MTFO.Managers.ConfigManager.CustomPath;
 
-			//Setup Exploder Config
+			//Migrate old config
 			MigrateOldConfig(customContentPath);
 
 			string customAbilityConfig = Path.Combine(customContentPath, "AbilityConfig.json");
@@ -46,29 +50,24 @@ namespace ExtraEnemyAbilities
 				Log.Debug("Writing to disk");
 				File.WriteAllText(customAbilityConfig, JsonConvert.SerializeObject(ConfigHolder));
             }
-
-			if (ExploderConfigDictionary != null)
-            {
-				CustomIDs.AddRange(ExploderConfigDictionary.Keys);
-            }
-			if (EMPConfigDictionary != null)
-            {
-				CustomIDs.AddRange(EMPConfigDictionary.Keys);
-            }
         }
 
-		public static ES_StateEnum GetEndState(uint ID)
+		public static bool GetAbility(uint id, out Il2CppSystem.Type ability)
         {
-			if (ExploderConfigDictionary != null)
+			if (ExploderConfigDictionary.ContainsKey(id))
             {
-				if (ExploderConfigDictionary.ContainsKey(ID))
-                {
-					return ES_StateEnum.Dead;
-                }
+				ability = Il2CppType.Of<ExploderAbility>();
+				return true;
             }
 
+			if (EMPConfigDictionary.ContainsKey(id))
+            {
+				ability = Il2CppType.Of<EMPAbility>();
+				return true;
+            }
 
-			return ES_StateEnum.PathMove;
+			ability = null;
+			return false;
         }
 
 		private static void MigrateOldConfig(string customContentPath)

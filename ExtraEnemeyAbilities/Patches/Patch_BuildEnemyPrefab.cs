@@ -8,46 +8,23 @@ using ExtraEnemyAbilities.Components;
 using ExtraEnemyAbilities.Components.Abilities;
 using GameData;
 using HarmonyLib;
+using UnhollowerRuntimeLib;
 using UnityEngine;
 
 namespace ExtraEnemyAbilities.Patches
 {
     [HarmonyPatch(typeof(EnemyPrefabManager), "GenerateEnemy")]
-    public class Patch_BuildEnemyPrefab
+    public class Patch_BuildEnemyPrefab_Generic
     {
         public static void Postfix(EnemyDataBlock data)
         {
-            //This should probably be some sort of generic
+            if (ConfigManager.GetAbility(data.persistentID, out Il2CppSystem.Type ability))
+            {
+                Log.Debug($"Creating '{ability.Name}' type enemy with name of '{data.name}'");
 
-            if (ConfigManager.ExploderConfigDictionary != null)
-            {
-                if (ConfigManager.ExploderConfigDictionary.ContainsKey(data.persistentID))
-                {
-                    Log.Debug($"Created exploder type enemy with name of '{data.name}'");
-                    GameObject ExploderPrefab = EnemyPrefabManager.Current.m_enemyPrefabs[data.persistentID];
-                    ExploderPrefab.AddComponent<ExploderAbility>();
-                    return;
-                }
+                GameObject enemyPrefab = EnemyPrefabManager.Current.m_enemyPrefabs[data.persistentID];
+                enemyPrefab.AddComponent(ability);
             }
-            if (data.persistentID == 303)
-            {
-                Log.Debug($"Created brap type enemy with name of '{data.name}'");
-                GameObject EMPPrefab = EnemyPrefabManager.Current.m_enemyPrefabs[data.persistentID];
-                EMPPrefab.AddComponent<DamageCloudAbilitity>();
-                return;
-            }
-#if TAB
-            if (ConfigManager.EMPConfigDictionary != null)
-            {
-                if (ConfigManager.EMPConfigDictionary.ContainsKey(data.persistentID))
-                {
-                    GameObject EMPPrefab = EnemyPrefabManager.Current.m_enemyPrefabs[data.persistentID];
-                    EMPPrefab.AddComponent<EMPAbility>();
-                    Log.Debug($"Created EMP type enemy with name of '{data.name}'");
-                    return;
-                }
-            }
-#endif
         }
     }
 }
