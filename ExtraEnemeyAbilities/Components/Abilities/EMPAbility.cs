@@ -33,7 +33,6 @@ namespace ExtraEnemyAbilities.Components
             Activated = false;
             Agent.AI.m_navMeshAgent.isStopped = false;
             Agent.AI.m_abilities.CanTriggerAbilities = true;
-            Agent.Damage.IsImortal = false;
         }
 
         private void TriggerEMP()
@@ -59,7 +58,7 @@ namespace ExtraEnemyAbilities.Components
             {
                 if (state == EMPState.Build)
                 {
-                    //Agent.Voice.PlayVoiceEvent(EVENTS.SCOUT_DETECT_SCREAM_CANCEL);
+                    Agent.Voice.PlayVoiceEvent(EVENTS.SCOUT_DETECT_SCREAM_CANCEL);
                 }
 
                 ResetState();
@@ -83,7 +82,7 @@ namespace ExtraEnemyAbilities.Components
                     Agent.Appearance.InterpolateGlow(GlowColor * 5, new Vector4(0f, 1.25f, 0f, 1.5f), 1f);
 
                     Agent.Locomotion.m_animator.CrossFadeInFixedTime(EnemyLocomotion.s_hashAbilityUse[0], 2f);
-                    //Agent.Voice.PlayVoiceEvent(EVENTS.SCOUT_DETECT_SCREAM_CHARGE);
+                    Agent.Voice.PlayVoiceEvent(EVENTS.SCOUT_DETECT_SCREAM_CHARGE);
 
                     state = EMPState.Activate;
                     stateTimer = Clock.Time + 2f;
@@ -92,7 +91,7 @@ namespace ExtraEnemyAbilities.Components
                 case EMPState.Activate:
                     if (stateTimer < Clock.Time)
                     {
-                        //Agent.Voice.PlayVoiceEvent(EVENTS.SCOUT_DETECT_SCREAM_CANCEL);
+                        Agent.Voice.PlayVoiceEvent(EVENTS.SCOUT_DETECT_SCREAM_CANCEL);
 
                         TriggerEMP();
 
