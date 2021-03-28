@@ -64,10 +64,10 @@ namespace ExtraEnemyAbilities.Components
             {
                 splatterTimer += Time.deltaTime;
                 detonatedTime += Time.deltaTime;
-                if (splatterTimer >= splatterMax)
-                {
-                    PlaySplatter();
-                }
+                //if (splatterTimer >= splatterMax)
+                //{
+                //    PlaySplatter();
+                //}
 
 
                 if (detonatedTime > 1 && !fade)
@@ -101,6 +101,7 @@ namespace ExtraEnemyAbilities.Components
             };
 
             ExplosionUtil.TriggerExplodion(Agent.EyePosition, ExploderConfig.Damage, ExploderConfig.Radius, noise);
+            PlaySplatter();
             return false;
         }
 
