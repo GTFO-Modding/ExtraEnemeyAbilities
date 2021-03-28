@@ -109,6 +109,7 @@ namespace ExtraEnemyAbilities.Components
         {
             if (splattered == true) return;
             splattered = true;
+            ExtraEnemyAbilities.log.LogDebug("Detonated");
             if (PlayerManager.TryGetLocalPlayerAgent(out PlayerAgent playerAgent))
             {
                 if (ScreenLiquidManager.TryApply(ScreenLiquidSettingName.enemyBlood_BigBloodBomb, Agent.Position, ExploderConfig.Radius * 2, true))
@@ -117,6 +118,7 @@ namespace ExtraEnemyAbilities.Components
                 }
 
                 if (ExploderConfig.InfectionAmount <= 0) return;
+                ExtraEnemyAbilities.log.LogDebug("Trying to apply infection");
                 if (ScreenLiquidManager.TryApply(ScreenLiquidSettingName.spitterJizz, Agent.Position, ExploderConfig.Radius, true))
                 {
                     playerAgent.Damage.ModifyInfection(new pInfection
