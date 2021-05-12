@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Components\Abilities\DamageCloudAbilitity.cs" />
     <Compile Include="Components\Abilities\EMPAbility.cs" />
+    <Compile Include="Components\Abilities\ImmortalAbility.cs" />
     <Compile Include="Components\CustomAbility.cs" />
     <Compile Include="Components\EMPComponent.cs" />
     <Compile Include="Components\Abilities\ExploderAbility.cs" />

@@ -5,6 +5,7 @@ using Enemies;
 using ExtraEnemyAbilities.Components;
 using System;
 using UnhollowerRuntimeLib;
+using ExtraEnemyAbilities.Components.Abilities;
 
 namespace ExtraEnemyAbilities
 {
@@ -15,6 +16,7 @@ namespace ExtraEnemyAbilities
 		public static string LocalPath;
 		public static Dictionary<uint, ExploderConfig> ExploderConfigDictionary { get { return ConfigHolder.ExploderConfigs; } }
 		public static Dictionary<uint, EMPConfig> EMPConfigDictionary { get { return ConfigHolder.EMPConfigs; } }
+		public static Dictionary<uint, ImmortalConfig> ImmortalConfigDictionary { get { return ConfigHolder.ImmortalConfigs; } }
 
 		private static ConfigHolder ConfigHolder;
 
@@ -32,7 +34,12 @@ namespace ExtraEnemyAbilities
 				{ 0, new EMPConfig() }
 			};
 
-            ConfigHolder = new ConfigHolder() { ExploderConfigs = exploderAbilities, EMPConfigs = empAbilities };
+			var imortalConfigs = new Dictionary<uint, ImmortalConfig>
+			{
+				{ 0, new ImmortalConfig() }
+			};
+
+			ConfigHolder = new ConfigHolder() { ExploderConfigs = exploderAbilities, EMPConfigs = empAbilities, ImmortalConfigs = imortalConfigs };
 			string customContentPath = MTFO.Managers.ConfigManager.CustomPath;
 
 			//Migrate old config
@@ -54,17 +61,31 @@ namespace ExtraEnemyAbilities
 
 		public static bool GetAbility(uint id, out Il2CppSystem.Type ability)
         {
-			if (ExploderConfigDictionary.ContainsKey(id))
+			try
             {
-				ability = Il2CppType.Of<ExploderAbility>();
-				return true;
-            }
+				if (ExploderConfigDictionary.ContainsKey(id))
+				{
+					ability = Il2CppType.Of<ExploderAbility>();
+					return true;
+				}
 
-			if (EMPConfigDictionary.ContainsKey(id))
+				if (EMPConfigDictionary.ContainsKey(id))
+				{
+					ability = Il2CppType.Of<EMPAbility>();
+					return true;
+				}
+
+				if (ImmortalConfigDictionary.ContainsKey(id))
+				{
+					ability = Il2CppType.Of<ImmortalAbility>();
+					return true;
+				}
+			}
+			catch
             {
-				ability = Il2CppType.Of<EMPAbility>();
-				return true;
-            }
+				ability = null;
+				return false;
+			}
 
 			ability = null;
 			return false;
@@ -88,6 +109,7 @@ namespace ExtraEnemyAbilities
 	{
 		public Dictionary<uint, ExploderConfig> ExploderConfigs;
 		public Dictionary<uint, EMPConfig> EMPConfigs;
+		public Dictionary<uint, ImmortalConfig> ImmortalConfigs;
 	}
 
 	public struct EMPConfig
@@ -105,6 +127,17 @@ namespace ExtraEnemyAbilities
 		public float InfectionAmount;
 		public bool NoExplosionOnDeath;
 		public ColorData ColorData;
+    }
+
+	public struct ImmortalConfig
+    {
+		public bool Immortal;
+    }
+
+	public struct CloakConfig
+    {
+		public float Duration;
+		public uint SFXID;
     }
 
     public struct ColorData
