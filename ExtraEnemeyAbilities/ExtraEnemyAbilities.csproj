@@ -44,6 +44,7 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Components\Abilities\CloakAbility.cs" />
     <Compile Include="Components\Abilities\DamageCloudAbilitity.cs" />
     <Compile Include="Components\Abilities\EMPAbility.cs" />
     <Compile Include="Components\Abilities\ImmortalAbility.cs" />
