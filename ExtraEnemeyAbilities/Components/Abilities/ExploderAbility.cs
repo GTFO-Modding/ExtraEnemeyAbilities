@@ -12,7 +12,7 @@ using FX_EffectSystem;
 using LevelGeneration;
 using StateMachines;
 
-namespace ExtraEnemyAbilities.Components
+namespace ExtraEnemyAbilities.Components.Abilities
 {
     public class ExploderAbility : CustomAbility
     {
@@ -36,9 +36,11 @@ namespace ExtraEnemyAbilities.Components
 
         public void Awake()
         {
-            GlowColor = Util.GetUnityColor(ExploderConfig.ColorData);
             Agent = GetComponent<EnemyAgent>();
+
+
             ExploderConfig = ConfigManager.ExploderConfigDictionary[Agent.EnemyDataID];
+            GlowColor = Util.GetUnityColor(ExploderConfig.ColorData);
 
             Agent.MaterialHandler.m_defaultGlowColor = GlowColor;
 
@@ -109,7 +111,6 @@ namespace ExtraEnemyAbilities.Components
         {
             if (splattered == true) return;
             splattered = true;
-            ExtraEnemyAbilities.log.LogDebug("Detonated");
             if (PlayerManager.TryGetLocalPlayerAgent(out PlayerAgent playerAgent))
             {
                 if (ScreenLiquidManager.TryApply(ScreenLiquidSettingName.enemyBlood_BigBloodBomb, Agent.Position, ExploderConfig.Radius * 2, true))
@@ -118,7 +119,6 @@ namespace ExtraEnemyAbilities.Components
                 }
 
                 if (ExploderConfig.InfectionAmount <= 0) return;
-                ExtraEnemyAbilities.log.LogDebug("Trying to apply infection");
                 if (ScreenLiquidManager.TryApply(ScreenLiquidSettingName.spitterJizz, Agent.Position, ExploderConfig.Radius, true))
                 {
                     playerAgent.Damage.ModifyInfection(new pInfection
