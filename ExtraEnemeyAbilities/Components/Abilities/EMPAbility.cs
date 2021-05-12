@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace ExtraEnemyAbilities.Components
+namespace ExtraEnemyAbilities.Components.Abilities
 {
     public class EMPAbility : CustomAbility
     {
@@ -56,11 +56,6 @@ namespace ExtraEnemyAbilities.Components
         {
             if (Agent.Locomotion.CurrentStateEnum != ES_StateEnum.TriggerFogSphere && Activated == true)
             {
-                if (state == EMPState.Build)
-                {
-                    Agent.Voice.PlayVoiceEvent(EVENTS.SCOUT_DETECT_SCREAM_CANCEL);
-                }
-
                 ResetState();
             }
 
@@ -82,7 +77,7 @@ namespace ExtraEnemyAbilities.Components
                     Agent.Appearance.InterpolateGlow(GlowColor * 5, new Vector4(0f, 1.25f, 0f, 1.5f), 1f);
 
                     Agent.Locomotion.m_animator.CrossFadeInFixedTime(EnemyLocomotion.s_hashAbilityUse[0], 2f);
-                    Agent.Voice.PlayVoiceEvent(EVENTS.SCOUT_DETECT_SCREAM_CHARGE);
+                    Agent.Voice.PlayVoiceEvent(EVENTS.INFECTION_SPITTER_PRIMED);
 
                     state = EMPState.Activate;
                     stateTimer = Clock.Time + 2f;
@@ -91,8 +86,7 @@ namespace ExtraEnemyAbilities.Components
                 case EMPState.Activate:
                     if (stateTimer < Clock.Time)
                     {
-                        Agent.Voice.PlayVoiceEvent(EVENTS.SCOUT_DETECT_SCREAM_CANCEL);
-
+                        Agent.Voice.PlayVoiceEvent(EVENTS.INFECTION_SPITTER_SPIT);
                         TriggerEMP();
 
                         Agent.Locomotion.m_animator.CrossFadeInFixedTime(EnemyLocomotion.s_hashAbilityUseOut[0], 0.15f);
