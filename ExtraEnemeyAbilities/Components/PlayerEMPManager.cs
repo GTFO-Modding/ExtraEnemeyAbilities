@@ -37,7 +37,7 @@ namespace ExtraEnemyAbilities.Components
         private enum HUDState
         {
             FlickerOff,
-            ForceDelay,
+            ForceOffDelay,
             ForceOff,
             FlickerOn,
             End
@@ -104,6 +104,7 @@ namespace ExtraEnemyAbilities.Components
             var warden = EEA_MelonCoroutines.Start(FlickerHudElement(GuiManager.PlayerLayer.m_wardenObjective, iterations, finalState, startDelayMin, startDelayMax));
             var status = EEA_MelonCoroutines.Start(FlickerHudElement(GuiManager.PlayerLayer.m_playerStatus, iterations, finalState, startDelayMin, startDelayMax));
             var chat = EEA_MelonCoroutines.Start(FlickerHudElement(GuiManager.PlayerLayer.m_gameEventLog, iterations, finalState, startDelayMin, startDelayMax));
+            
             var flashLight = EEA_MelonCoroutines.Start(FlickerFlashlight(iterations, finalState));
             coroutines.Add(inventory);
             coroutines.Add(compass);
@@ -117,31 +118,46 @@ namespace ExtraEnemyAbilities.Components
         {
             if (!triggered) return;
 
-            PlayerInventoryBase.SetFlashlightEnabled(FlashlightEnabled);
+            PlayerInventoryBase.SetFlashlightEnabled(FlashlightEnabled, false, false);
 
             switch (state)
             {
                 case HUDState.FlickerOff:
                     Flicker(10, false, 0.5f, 0.8f);
                     EEAGlobalState.IsPlayerEMP = true;
-                    state = HUDState.FlickerOn;
-                    stateTimer = Clock.Time + FlashDuration;
+                    state = HUDState.ForceOffDelay;
+                    stateTimer = Clock.Time + 5f;
+                    GuiManager.NavMarkerLayer.m_visible = false;
+                    break;
+
+                case HUDState.ForceOffDelay:
+                    if (stateTimer < Clock.Time)
+                    {
+                        state = HUDState.ForceOff;
+                        stateTimer = Clock.Time + Duration;
+                    }
+                    break;
+
+                case HUDState.ForceOff:
+                    GuiManager.PlayerLayer.SetVisible(false);
+                    FlashlightEnabled = false;
+                    if (stateTimer > Clock.Time)
+                    {
+                        state = HUDState.FlickerOn;
+                    }
                     break;
 
                 case HUDState.FlickerOn:
-                    if (stateTimer < Clock.Time)
-                    {
-                        GuiManager.PlayerLayer.SetVisible(true);
-                        GuiManager.PlayerLayer.Inventory.SetVisible(false);
-                        GuiManager.PlayerLayer.m_compass.SetVisible(false);
-                        GuiManager.PlayerLayer.m_wardenObjective.SetVisible(false);
-                        GuiManager.PlayerLayer.m_playerStatus.SetVisible(false);
-                        GuiManager.PlayerLayer.m_gameEventLog.SetVisible(false);
-
-                        Flicker(20, true);
-                        state = HUDState.End;
-                        stateTimer = Clock.Time + Duration - FlashDuration;
-                    }
+                    GuiManager.PlayerLayer.SetVisible(true);
+                    GuiManager.PlayerLayer.Inventory.SetVisible(false);
+                    GuiManager.PlayerLayer.m_compass.SetVisible(false);
+                    GuiManager.PlayerLayer.m_wardenObjective.SetVisible(false);
+                    GuiManager.PlayerLayer.m_playerStatus.SetVisible(false);
+                    GuiManager.PlayerLayer.m_gameEventLog.SetVisible(false);
+                    GuiManager.NavMarkerLayer.m_visible = true;
+                    Flicker(20, true);
+                    state = HUDState.End;
+                    stateTimer = Clock.Time + Duration - FlashDuration;
                     break;
 
                 case HUDState.End:
