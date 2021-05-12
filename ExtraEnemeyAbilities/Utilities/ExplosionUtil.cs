@@ -50,31 +50,31 @@ namespace ExtraEnemyAbilities.Utilities
                     } else
                     {
 #if DEBUG
-                        GameObject mySphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                        mySphere.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-                        mySphere.transform.position = raycastHit.point;
-                        var col = mySphere.GetComponent<Collider>();
-                        var mesh = mySphere.GetComponent<MeshRenderer>();
-                        mesh.material.color = Color.red;
-                        GameObject.Destroy(col);
+                        //GameObject mySphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                        //mySphere.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+                        //mySphere.transform.position = raycastHit.point;
+                        //var col = mySphere.GetComponent<Collider>();
+                        //var mesh = mySphere.GetComponent<MeshRenderer>();
+                        //mesh.material.color = Color.red;
+                        //GameObject.Destroy(col);
 #endif
                     }
 
 
 #if DEBUG
-                    GameObject line = new GameObject();
-                    line.AddComponent<LineRenderer>();
-                    LineRenderer lineRender = line.GetComponent<LineRenderer>();
-                    lineRender.material = new Material(Shader.Find("Sprites/Default"));
-                    lineRender.widthMultiplier = 0.05f;
-                    lineRender.SetColors(Color.green, Color.green);
-                    lineRender.SetPositions(new Vector3[] { pos, targetPos });
-
-                    if (hit == false)
-                    {
-                        lineRender.SetColors(Color.red, Color.red);
-                        lineRender.SetPositions(new Vector3[] { pos, raycastHit.point });
-                    }
+                    //GameObject line = new GameObject();
+                    //line.AddComponent<LineRenderer>();
+                    //LineRenderer lineRender = line.GetComponent<LineRenderer>();
+                    //lineRender.material = new Material(Shader.Find("Sprites/Default"));
+                    //lineRender.widthMultiplier = 0.05f;
+                    //lineRender.SetColors(Color.green, Color.green);
+                    //lineRender.SetPositions(new Vector3[] { pos, targetPos });
+                    //
+                    //if (hit == false)
+                    //{
+                    //    lineRender.SetColors(Color.red, Color.red);
+                    //    lineRender.SetPositions(new Vector3[] { pos, raycastHit.point });
+                    //}
 #endif
                 }
                 NoiseManager.MakeNoise(noiseData);
